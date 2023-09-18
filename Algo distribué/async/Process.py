@@ -9,7 +9,6 @@ from MessageDedie import MessageDedie
 #from geeteventbus.event import event
 
 #from EventBus import EventBus
-from Bidule import Bidule
 from BroadcastMessage import BroadcastMessage
 from Token import Token
 from SynchronizeMessage import SynchronizeMessage
@@ -37,13 +36,6 @@ class Process(Thread):
         self.nbSynchronized = 0
         self.start()
         
-    @subscribe(threadMode = Mode.PARALLEL, onEvent=Bidule)
-    def process(self, event):
-
-        self.incrClock(event.getEstampille())
-        print(self.getName() + ' Processes event: ' + event.getMachin() + " clock : " + str(self.clock))
-
-
 
     def run(self):
         loop = 0
@@ -56,6 +48,7 @@ class Process(Thread):
             print(self.getName() + " Loop: " + str(loop) + " clock : " + str(self.clock),flush=True)
             sleep(1)
 
+            # Les tests sont commentés pour pouvoir tester les autres fonctionnalités
             if self.getName() == "P1":
                 # self.incrClock()
                 # b1 = Bidule("ga", self.clock)
