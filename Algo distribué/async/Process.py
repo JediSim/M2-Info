@@ -126,16 +126,21 @@ class Process(Thread):
         if self.getName() == token.getDest():
             # print("receive token : " + str(token), flush=True)
             # self.incrClock(token.getEstampille())
+            # On a le jeton
             self.notToken = False
+            # On regarde si on a demandé l'acces a la section critique
             if self.req:
                 # On est dans la section critique
                 print("section critique : " + str(token), flush=True)
                 # print(token)
             else:
+                # On passe le jeton au processus suivant
                 self.release()
         
     def request(self):
+        # On demande l'acces a la section critique
         self.req = True
+        # Tant qu'on a pas le jeton
         while self.notToken == True:
             sleep(2)
 
