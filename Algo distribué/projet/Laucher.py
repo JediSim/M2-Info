@@ -1,13 +1,13 @@
 from time import sleep
-from Process import Process
+from Exemple import Process
 
 if __name__ == '__main__':
 
     #bus = EventBus.getInstance()
 
-    p1 = Process("P1")
-    p2 = Process("P2")
-    p3 = Process("P3")
+    p1 = Process("P0")
+    p2 = Process("P1")
+    p3 = Process("P2")
 
     sleep(5)
 

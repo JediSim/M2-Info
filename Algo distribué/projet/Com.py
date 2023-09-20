@@ -1,4 +1,4 @@
-from threading import Lock, Thread
+from threading import Semaphore
 
 from time import sleep
 
@@ -13,75 +13,37 @@ from BroadcastMessage import BroadcastMessage
 from Token import Token
 from SynchronizeMessage import SynchronizeMessage
 from DeathMessage import DeathMessage
+from MailBox import MailBox
 
 from pyeventbus3.pyeventbus3 import *
 
-class Process(Thread):
+class Com():
     nbProcess = 0
-    def __init__(self,name):
-        Thread.__init__(self)
+    def __init__(self):
+        # Thread.__init__(self)
 
 
-        self.myId = Process.nbProcess
-        Process.nbProcess +=1
-        self.setName(name)
+        self.myId = Com.nbProcess
+        Com.nbProcess +=1
+        # self.setName(name)
 
         PyBus.Instance().register(self, self)
+        self.semaphoreClock = Semaphore()
 
+        self.mailbox = MailBox()
         self.clock = 0
         self.alive = True
         self.req = False
         self.notToken = True
         self.synchronized = False
         self.nbSynchronized = 0
-        self.start()
-        
 
-    def run(self):
-        loop = 0
-
-        if self.getName() == "P3":
-            # token = Token(self.clock, self.getName())
-            self.release()
-
-        while self.alive:
-            print(self.getName() + " Loop: " + str(loop) + " clock : " + str(self.clock),flush=True)
-            sleep(1)
-
-            # Les tests sont commentés pour pouvoir tester les autres fonctionnalités
-            if self.getName() == "P1":
-                # self.incrClock()
-                # b1 = Bidule("ga", self.clock)
-                # b2 = Bidule("bu")
-                # print(self.getName() + " send: " + b1.getMachin() + " clock : " + str(self.clock))
-                # =========================================== BM
-                # b1 = BroadcastMessage("ga", self.clock, self.getName())
-                # print(self.getName() + " " + str(b1))
-                # PyBus.Instance().post(b1)
-                # =========================================== MP
-                # b1 = MessageDedie("ga", self.clock, "P2")
-                # print(self.getName() + " " + str(b1))
-                # PyBus.Instance().post(b1)
-                # =========================================== Token
-            #     self.request()
-                # print("ATTANTION !!!! c'est critique clock : " + str(self.clock))
-            #     self.release()
-                self.synchronize()
-            
-            if self.getName() == "P2":
-            #     self.sendTo("ga", "P1")
-                self.synchronize()
-
-            if self.getName() == "P3":
-                self.synchronize()
-
-            loop+=1
-        print(self.getName() + " stopped")
 
     def incrClock(self, concuClock=None):
         """
             Incrémente l'horloge logique
         """
+        self.semaphoreClock.acquire()
         if concuClock == None:
             self.clock+=1
         elif concuClock > self.clock:
@@ -89,24 +51,25 @@ class Process(Thread):
             self.clock+=1
         else:
             self.clock+=1
+        self.semaphoreClock.release()
 
     @subscribe(threadMode = Mode.PARALLEL, onEvent=BroadcastMessage)
-    def onBroadcast(self, event):
-        if self.getName() != event.getSender():
-            self.incrClock(event.getEstampille())
-            print(self.getName() + ' Processes event: ' + event.getMessage() + " clock : " + str(self.clock))
+    def onBroadcast(self, message):
+        if self.myId != message.getSender():
+            self.incrClock(message.getEstampille())
+            self.mailbox.addMessage(message)
 
-    def broadcast(self, message):
+    def broadcast(self, message, sender):
         self.incrClock()
-        b1 = BroadcastMessage(message, self.clock)
-        print(self.getName() + " send: " + b1.getMessage() + " clock : " + str(self.clock))
+        b1 = BroadcastMessage(message, self.clock, sender)
+        print(str(self.myId) + " send: " + str(b1))
         PyBus.Instance().post(b1)
 
     @subscribe(threadMode = Mode.PARALLEL, onEvent=MessageDedie)
     def onReceive(self, message):
-        if self.getName() == message.getDest():
+        if self.myId == message.getDest():
             self.incrClock(message.getEstampille())
-            print(str(message) + " clock : " + str(self.clock))
+            self.mailbox.addMessage(message)
 
     def sendTo(self, message, dest):
         self.incrClock()
@@ -116,7 +79,7 @@ class Process(Thread):
 
     @subscribe(threadMode = Mode.PARALLEL, onEvent=Token)
     def onToken(self, token):
-        if self.getName() == token.getDest():
+        if self.myId == token.getDest():
             # print("receive token : " + str(token), flush=True)
             # self.incrClock(token.getEstampille())
             # On a le jeton
@@ -124,20 +87,20 @@ class Process(Thread):
             # On regarde si on a demandé l'acces a la section critique
             if self.req:
                 # On est dans la section critique
-                print("section critique : " + str(token), flush=True)
+                print(str(self.myId) + " section critique : " + str(token), flush=True)
                 # print(token)
             else:
                 # On passe le jeton au processus suivant
-                self.release()
+                self.releaseSC()
         
-    def request(self):
+    def requestSC(self):
         # On demande l'acces a la section critique
         self.req = True
         # Tant qu'on a pas le jeton
         while self.notToken == True:
             sleep(2)
 
-    def release(self):
+    def releaseSC(self):
         # Ajoutté pour pouvoir arréter le processus a la fin
         if self.alive:
             self.req = False
@@ -151,11 +114,11 @@ class Process(Thread):
         """
             Calcul le nom du processus suivant pour le token
         """
-        return "P" + str((self.myId + 1)%Process.nbProcess + 1)
+        return (self.myId + 1)%Com.nbProcess + 1
     
     @subscribe(threadMode = Mode.PARALLEL, onEvent=SynchronizeMessage)
     def onSynchronize(self, message):
-        if self.getName() != message.getSender():
+        if self.myId != message.getSender():
             self.incrClock(message.getEstampille())
             self.nbSynchronized += 1
             print(self.getName() + " " + str(message) + " nbSynchronized : " + str(self.nbSynchronized))
@@ -165,11 +128,11 @@ class Process(Thread):
             Synchronisation des processus
         """
         self.incrClock()
-        msg = SynchronizeMessage(self.getName(), self.clock)
+        msg = SynchronizeMessage(self.myId, self.clock)
         PyBus.Instance().post(msg)
         # On attend que tous les processus-1 (ne pas compter le processus courant) aient envoyé un message de synchronisation
-        while self.nbSynchronized < Process.nbProcess - 1:
-            print(self.getName() + " wait nbSynchronized : " + str(self.nbSynchronized) +  " Process.nbProcess : " + str(Process.nbProcess))
+        while self.nbSynchronized < Com.nbProcess - 1:
+            print(self.myId + " wait nbSynchronized : " + str(self.nbSynchronized) +  " Com.nbProcess : " + str(Com.nbProcess))
             sleep(2)
         self.nbSynchronized = 0
 
@@ -179,13 +142,23 @@ class Process(Thread):
             Reception d'un message de mort d'un processus
             Utilisé pour eviter le cas ou un processus avant la fin d'une sychronisation
         """
-        if self.getName() != message.getSender():
+        if self.myId != message.getSender():
             # self.incrClock(message.getEstampille())
-            print(self.getName() + " " + str(message))
-            Process.nbProcess -= 1
+            # print(str(self.myId) + " " + str(message))
+            Com.nbProcess -= 1
+
+    def sendDeathMessage(self):
+        msg = DeathMessage(self.clock, self.myId)
+        PyBus.Instance().post(msg)
 
     def stop(self):
         self.alive = False
-        msg = DeathMessage(self.clock, self.getName())
-        PyBus.Instance().post(msg)
-        self.join()
+        self.sendDeathMessage()
+        # self.join()
+
+    def getNbProcess(self):
+        return Com.nbProcess
+    
+    def getMyId(self):
+        return self.myId
+    
