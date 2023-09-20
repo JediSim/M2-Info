@@ -42,7 +42,8 @@ class Process(Thread):
                 #     msg = self.com.mailbox.getMsg();
                 #     print(str(msg.getSender())+" à eu le jeton en premier")
                 # self.com.releaseSC()
-
+                self.com.synchronize()
+                print("P0 est synchro")
 
             if self.getName() == "P1":
                 if not (self.com.mailbox.isEmpty()):
@@ -65,6 +66,8 @@ class Process(Thread):
                         msg = self.com.mailbox.getMsg()
                         print(str(self.getName()) + " " + str(msg))
                     self.com.releaseSC()
+                self.com.synchronize()
+                print("P1 est synchro")
                     
             if self.getName() == "P2":
             #     self.com.recevFromSync(msg, 0)
@@ -83,6 +86,9 @@ class Process(Thread):
             #     self.com.releaseSC()
                 # TODO: C'est peut être pas la bonne méthode pour lancer le token sur le ring
                 self.com.releaseSC()
+                self.com.synchronize()
+                print("P2 est synchro")
+
                 
 
             loop+=1

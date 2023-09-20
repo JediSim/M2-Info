@@ -60,6 +60,11 @@ class Com():
             self.mailbox.addMessage(message)
 
     def broadcast(self, message, sender):
+        """
+            Envoie un message à tous les process
+            @param message: message à envoyer
+            @param sender: processus qui envoie le message
+        """
         self.incrClock()
         b1 = BroadcastMessage(message, self.clock, sender)
         print(str(self.myId) + " send: " + str(b1))
@@ -72,6 +77,11 @@ class Com():
             self.mailbox.addMessage(message)
 
     def sendTo(self, message, dest):
+        """
+            Envoie un message à un processus
+            @param message: message à envoyer
+            @param dest: destinataire du message
+        """
         self.incrClock()
         b1 = MessageDedie(message, self.clock, dest)
         print(str(b1) + " clock : " + str(self.clock))
@@ -94,6 +104,9 @@ class Com():
                 self.releaseSC()
         
     def requestSC(self):
+        """
+            Demande l'acces a la section critique
+        """
         # On demande l'acces a la section critique
         self.req = True
         # Tant qu'on a pas le jeton
@@ -101,6 +114,9 @@ class Com():
             sleep(2)
 
     def releaseSC(self):
+        """
+            Libère la section critique
+        """
         # Ajoutté pour pouvoir arréter le processus a la fin
         if self.alive:
             self.req = False
@@ -121,7 +137,7 @@ class Com():
         if self.myId != message.getSender():
             self.incrClock(message.getEstampille())
             self.nbSynchronized += 1
-            print(self.getName() + " " + str(message) + " nbSynchronized : " + str(self.nbSynchronized))
+            print(str(self.myId) + " " + str(message) + " nbSynchronized : " + str(self.nbSynchronized))
 
     def synchronize(self):
         """
@@ -132,7 +148,7 @@ class Com():
         PyBus.Instance().post(msg)
         # On attend que tous les processus-1 (ne pas compter le processus courant) aient envoyé un message de synchronisation
         while self.nbSynchronized < Com.nbProcess - 1:
-            print(self.myId + " wait nbSynchronized : " + str(self.nbSynchronized) +  " Com.nbProcess : " + str(Com.nbProcess))
+            print(str(self.myId) + " wait nbSynchronized : " + str(self.nbSynchronized) +  " Com.nbProcess : " + str(Com.nbProcess))
             sleep(2)
         self.nbSynchronized = 0
 
@@ -152,6 +168,9 @@ class Com():
         PyBus.Instance().post(msg)
 
     def stop(self):
+        """
+            stop le com proprement
+        """
         self.alive = False
         self.sendDeathMessage()
         # self.join()
