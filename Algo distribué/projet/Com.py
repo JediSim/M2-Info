@@ -14,6 +14,8 @@ from Token import Token
 from SynchronizeMessage import SynchronizeMessage
 from DeathMessage import DeathMessage
 from MailBox import MailBox
+from BroadcastSynchMessage import BroadcastSynchMessage
+from AcknowledgeMessage import AcknowledgeMessage
 
 from pyeventbus3.pyeventbus3 import *
 
@@ -37,6 +39,7 @@ class Com():
         self.notToken = True
         self.synchronized = False
         self.nbSynchronized = 0
+        self.nbBroadcastSync = 0
 
 
     def incrClock(self, concuClock=None):
@@ -166,6 +169,54 @@ class Com():
     def sendDeathMessage(self):
         msg = DeathMessage(self.clock, self.myId)
         PyBus.Instance().post(msg)
+
+    @subscribe(threadMode = Mode.PARALLEL, onEvent=AcknowledgeMessage)
+    def onAcknowledgement(self, message):
+        """
+            Accusé reception d'un message synch
+        """
+        if self.myId == message.getDest():
+            self.incrClock(message.getEstampille())
+            self.nbBroadcastSync += 1
+
+    @subscribe(threadMode = Mode.PARALLEL, onEvent=BroadcastSynchMessage)
+    def onBroadcastSynch(self, message):
+        """
+            Reception d'un message de broadcast synch
+        """
+        if self.myId != message.getSender():
+            self.incrClock(message.getEstampille())
+            self.mailbox.addMessageSynch(message)
+            
+
+    def receiveSynchMessage(self, sender):
+        """
+            Reception d'un message de broadcast synch
+        """
+        lastSynch = self.mailbox.getLastMsgSynch()
+        if lastSynch.getSender() == sender:
+            return lastSynch
+        return None
+
+    def broadcastSync(self, sender, message=None):
+        """
+            Envoie un message à tous les processus de manière synchronisé
+            @param message: message à envoyer
+            @param sender: processus qui envoie le message
+        """
+        if self.myId == sender:
+            self.incrClock()
+            msg = BroadcastSynchMessage(message, self.clock, self.myId)
+            PyBus.Instance().post(msg)
+            while self.nbBroadcastSync < Com.nbProcess - 1:
+                sleep(2)
+        else:
+            lastSynch = self.receiveSynchMessage(sender)
+            while lastSynch == None:
+                sleep(2)
+            print(str(self.myId) + " " + str(lastSynch))
+            msg = AcknowledgeMessage("",self.clock, sender, lastSynch.getId())
+            PyBus.Instance().post(msg)
 
     def stop(self):
         """
