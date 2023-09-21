@@ -16,6 +16,8 @@ from DeathMessage import DeathMessage
 from MailBox import MailBox
 from BroadcastSynchMessage import BroadcastSynchMessage
 from AcknowledgeMessage import AcknowledgeMessage
+from SendToSynchMessage import SendToSynchMessage
+from AcknowledgeSendToMessage import AcknowledgeSendToMessage
 
 from pyeventbus3.pyeventbus3 import *
 
@@ -40,6 +42,8 @@ class Com():
         self.synchronized = False
         self.nbSynchronized = 0
         self.nbBroadcastSync = 0
+        self.notAcknowledge = True
+        self.deathNode = []
 
 
     def incrClock(self, concuClock=None):
@@ -165,6 +169,7 @@ class Com():
             # self.incrClock(message.getEstampille())
             # print(str(self.myId) + " " + str(message))
             Com.nbProcess -= 1
+            self.deathNode.append(message.getSender())
 
     def sendDeathMessage(self):
         msg = DeathMessage(self.clock, self.myId)
@@ -193,7 +198,7 @@ class Com():
         """
             Reception d'un message de broadcast synch
         """
-        lastSynch = self.mailbox.getLastMsgSynch()
+        lastSynch = self.mailbox.getMsgFromSender(sender)
         if lastSynch.getSender() == sender:
             return lastSynch
         return None
@@ -211,12 +216,60 @@ class Com():
             while self.nbBroadcastSync < Com.nbProcess - 1:
                 sleep(2)
         else:
-            lastSynch = self.receiveSynchMessage(sender)
+            lastSynch = self.mailbox.getMsgFromSender(sender)
             while lastSynch == None:
                 sleep(2)
+                lastSynch = self.mailbox.getMsgFromSender(sender)
             print(str(self.myId) + " " + str(lastSynch))
             msg = AcknowledgeMessage("",self.clock, sender, lastSynch.getId())
             PyBus.Instance().post(msg)
+
+    @subscribe(threadMode = Mode.PARALLEL, onEvent=SendToSynchMessage)
+    def onSendToSynch(self, message):
+        """
+            Reception d'un message de manière synchronisé
+        """
+        if self.myId == message.getReceiver():
+            self.incrClock(message.getEstampille())
+            self.mailbox.addMessageSynch(message)
+
+    @subscribe(threadMode = Mode.PARALLEL, onEvent=AcknowledgeSendToMessage)
+    def onAcknowledgeSendTo(self, message):
+        """
+            Accusé reception d'un message synch
+        """
+        if self.myId == message.getDest():
+            self.notAcknowledge = False
+
+    def recevFromSync(self, sender):
+        """
+            Reception d'un message de manière synchronisé
+            @param message: message à envoyer
+            @param sender: processus qui envoie le message
+        """
+        lastSynch = self.mailbox.getMsgFromSender(sender)
+        while lastSynch == None and self.deathNode.count(sender) == 0:
+            sleep(2)
+            lastSynch = self.mailbox.getMsgFromSender(sender)
+            print("wait message : " + str(lastSynch))
+        print(str(self.myId) + " " + str(lastSynch))
+        msg = AcknowledgeSendToMessage("",self.clock, sender, lastSynch.getId())
+        PyBus.Instance().post(msg)
+        return lastSynch
+
+    def sendToSync(self, message, dest):
+        """
+            Envoie un message à un processus de manière synchronisé
+            @param message: message à envoyer
+            @param dest: destinataire du message
+        """
+        self.incrClock()
+        msg = SendToSynchMessage(self.myId, dest, message, self.clock)
+        PyBus.Instance().post(msg)
+        while self.notAcknowledge and self.deathNode.count(dest) == 0:
+            sleep(2)
+            print("wait ack")
+        self.notAcknowledge = True
 
     def stop(self):
         """

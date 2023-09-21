@@ -19,8 +19,11 @@ class MailBox:
     def getMsgSynch(self):
         return self.messagesSynch.pop(0)
     
-    def getLastMsgSynch(self):
-        return self.messagesSynch[-1]
+    def getMsgFromSender(self, sender):
+        for i in range(len(self.messagesSynch)):
+            if self.messagesSynch[i].getSender() == sender:
+                return self.messagesSynch[i]
+        return None
 
     def isEmptySynch(self):
         return len(self.messagesSynch) == 0

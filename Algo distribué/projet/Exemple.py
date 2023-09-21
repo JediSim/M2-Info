@@ -45,6 +45,8 @@ class Process(Thread):
                 self.com.synchronize()
                 print("P0 est synchro")
                 self.com.broadcastSync(self.myId, "P0 est synchro")
+                msg = self.com.recevFromSync(2)
+                print(str(self.getName()) + " " + str(msg))
 
             if self.getName() == "P1":
                 if not (self.com.mailbox.isEmpty()):
@@ -91,6 +93,7 @@ class Process(Thread):
                 self.com.synchronize()
                 print("P2 est synchro")
                 self.com.broadcastSync(0)
+                self.com.sendToSync("OK", 0)
 
                 
 
