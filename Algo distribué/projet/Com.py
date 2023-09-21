@@ -197,6 +197,7 @@ class Com():
     def receiveSynchMessage(self, sender):
         """
             Reception d'un message de broadcast synch
+            @param sender: processus qui envoie le message
         """
         lastSynch = self.mailbox.getMsgFromSender(sender)
         if lastSynch.getSender() == sender:
