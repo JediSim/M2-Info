@@ -28,7 +28,7 @@ class Process(Thread):
                 self.com.connect(self.getName())
 
             if self.getName() == "P0":
-                self.com.sendTo("wesh le sang", "P1")
+                self.com.sendTo("Hello World", "P1")
                 self.com.broadcast("coucou tout le monde", self.getName())
                 
                 self.com.synchronize()
