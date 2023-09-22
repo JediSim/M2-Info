@@ -10,5 +10,5 @@ class Message():
         return self.estampille
     
     def __str__(self) -> str:
-        return "message : " + self.message + " estampille : " + str(self.estampille)
+        return "message : " + str(self.message) + " estampille : " + str(self.estampille)
     

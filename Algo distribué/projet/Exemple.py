@@ -24,76 +24,45 @@ class Process(Thread):
             print(self.getName() + " Loop: " + str(loop))
             sleep(1)
 
+            if loop == 0:
+                self.com.connect(self.getName())
+
             if self.getName() == "P0":
-                self.com.sendTo("wesh le sang", 1)
-                self.com.broadcast("coucou tout le monde", self.myId)
+                self.com.sendTo("wesh le sang", "P1")
+                self.com.broadcast("coucou tout le monde", self.getName())
                 
-                # self.com.sendToSync("J'ai laissé un message à 1, je le rappellerai après, on se sychronise tous et on attaque la partie ?", 2)
-                # self.com.recevFromSync(msg, 2)
-               
-                # self.com.sendToSync("2 est OK pour jouer, on se synchronise et c'est parti!",1)
-                    
-                # self.com.synchronize()
-                    
-                # if self.com.mailbox.isEmpty():
-                #     print("Catched !")
-                #     self.com.broadcast("J'ai gagné !!!")
-                # else:
-                #     msg = self.com.mailbox.getMsg();
-                #     print(str(msg.getSender())+" à eu le jeton en premier")
-                # self.com.releaseSC()
                 self.com.synchronize()
-                print("P0 est synchro")
-                self.com.broadcastSync(self.myId, "P0 est synchro")
-                msg = self.com.recevFromSync(2)
-                print(str(self.getName()) + " " + str(msg))
+                print("P0 est synchro", flush=True)
+                self.com.broadcastSync(self.getName(), "P0 est synchro")
+                msg = self.com.recevFromSync("P2")
+                print(str(self.getName()) + " " + str(msg), flush=True)
 
             if self.getName() == "P1":
                 if not (self.com.mailbox.isEmpty()):
-                    # self.com.mailbox.getMessage()
-                    # self.com.recevFromSync(msg, 0)
-
-                    # self.com.synchronize()
                     
-                    # self.com.requestSC()
-                    # if self.com.mailbox.isEmpty():
-                    #     print("Catched !")
-                    #     self.com.broadcast("J'ai gagné !!!")
-                    # else:
-                    #     msg = self.com.mailbox.getMsg();
-                    #     print(str(msg.getSender())+" à eu le jeton en premier")
-                    # self.com.releaseSC()
                     self.com.requestSC()
                     print("P1 a le jeton")
                     while not self.com.mailbox.isEmpty():
                         msg = self.com.mailbox.getMsg()
-                        print(str(self.getName()) + " " + str(msg))
+                        print(str(self.getName()) + " " + str(msg), flush=True)
                     self.com.releaseSC()
+                print("P1 : " + str(self.alive) + " - deathNode : " + str(self.com.deathNode) + " - nodesId : " + str(self.com.nodesId), flush=True)
                 self.com.synchronize()
-                print("P1 est synchro")
-                self.com.broadcastSync(0)
+                print("P1 est synchro", flush=True)
+                self.com.broadcastSync("P0")
                     
             if self.getName() == "P2":
-            #     self.com.recevFromSync(msg, 0)
-            #     self.com.sendToSync("OK", 0)
-
-            #     self.com.synchronize()
-                    
-            #     self.com.requestSC()
-            #     if self.com.mailbox.isEmpty():
-            #         print("Catched !")
-            #         self.com.broadcast("J'ai gagné !!!")
-            #     else:
-                while not self.com.mailbox.isEmpty():
-                    msg = self.com.mailbox.getMsg()
-                    print(str(self.getName()) + " " + str(msg))
-            #     self.com.releaseSC()
                 # TODO: C'est peut être pas la bonne méthode pour lancer le token sur le ring
-                self.com.releaseSC()
+                if loop == 0:
+                    self.com.releaseSC()
+                # while not self.com.mailbox.isEmpty():
+                #     msg = self.com.mailbox.getMsg()
+                #     print(str(self.getName()) + " " + str(msg))
                 self.com.synchronize()
-                print("P2 est synchro")
-                self.com.broadcastSync(0)
-                self.com.sendToSync("OK", 0)
+                print("P2 est synchro", flush=True)
+                self.com.broadcastSync("P0")
+                self.com.sendToSync("OK", "P0")
+                print("P2 : " + str(self.alive) + " - deathNode : " + str(self.com.deathNode) + " - nodesId : " + str(self.com.nodesId), flush=True)
 
                 
 

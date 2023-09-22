@@ -1,4 +1,5 @@
 from threading import Semaphore
+from random import randint
 
 from time import sleep
 
@@ -18,17 +19,17 @@ from BroadcastSynchMessage import BroadcastSynchMessage
 from AcknowledgeMessage import AcknowledgeMessage
 from SendToSynchMessage import SendToSynchMessage
 from AcknowledgeSendToMessage import AcknowledgeSendToMessage
+from ConnectionMessage import ConnectionMessage
 
 from pyeventbus3.pyeventbus3 import *
 
 class Com():
-    nbProcess = 0
+    # nbProcess = 0
     def __init__(self):
         # Thread.__init__(self)
 
-
-        self.myId = Com.nbProcess
-        Com.nbProcess +=1
+        self.myId = None
+        # Com.nbProcess +=1
         # self.setName(name)
 
         PyBus.Instance().register(self, self)
@@ -44,6 +45,9 @@ class Com():
         self.nbBroadcastSync = 0
         self.notAcknowledge = True
         self.deathNode = []
+        self.nodesId = []
+        self.tmpId = None
+        self.myIdConfirmed = False
 
 
     def incrClock(self, concuClock=None):
@@ -72,6 +76,7 @@ class Com():
             @param message: message à envoyer
             @param sender: processus qui envoie le message
         """
+        sender = self.getIdFromName(sender)
         self.incrClock()
         b1 = BroadcastMessage(message, self.clock, sender)
         print(str(self.myId) + " send: " + str(b1))
@@ -89,6 +94,7 @@ class Com():
             @param message: message à envoyer
             @param dest: destinataire du message
         """
+        dest = self.getIdFromName(dest)
         self.incrClock()
         b1 = MessageDedie(message, self.clock, dest)
         print(str(b1) + " clock : " + str(self.clock))
@@ -96,7 +102,7 @@ class Com():
 
     @subscribe(threadMode = Mode.PARALLEL, onEvent=Token)
     def onToken(self, token):
-        if self.myId == token.getDest():
+        if self.myId == token.getDest() and self.alive:
             # print("receive token : " + str(token), flush=True)
             # self.incrClock(token.getEstampille())
             # On a le jeton
@@ -108,6 +114,7 @@ class Com():
                 # print(token)
             else:
                 # On passe le jeton au processus suivant
+                # print("SC : " + str(self.myId) + " " + str(token), flush=True)
                 self.releaseSC()
         
     def requestSC(self):
@@ -117,7 +124,7 @@ class Com():
         # On demande l'acces a la section critique
         self.req = True
         # Tant qu'on a pas le jeton
-        while self.notToken == True:
+        while self.notToken == True and self.alive:
             sleep(2)
 
     def releaseSC(self):
@@ -137,11 +144,11 @@ class Com():
         """
             Calcul le nom du processus suivant pour le token
         """
-        return (self.myId + 1)%Com.nbProcess + 1
+        return (self.myId + 1) % len(self.nodesId) - len(self.deathNode)
     
     @subscribe(threadMode = Mode.PARALLEL, onEvent=SynchronizeMessage)
     def onSynchronize(self, message):
-        if self.myId != message.getSender():
+        if self.myId != message.getSender() and self.alive:
             self.incrClock(message.getEstampille())
             self.nbSynchronized += 1
             print(str(self.myId) + " " + str(message) + " nbSynchronized : " + str(self.nbSynchronized))
@@ -154,8 +161,8 @@ class Com():
         msg = SynchronizeMessage(self.myId, self.clock)
         PyBus.Instance().post(msg)
         # On attend que tous les processus-1 (ne pas compter le processus courant) aient envoyé un message de synchronisation
-        while self.nbSynchronized < Com.nbProcess - 1:
-            print(str(self.myId) + " wait nbSynchronized : " + str(self.nbSynchronized) +  " Com.nbProcess : " + str(Com.nbProcess))
+        while self.nbSynchronized < len(self.nodesId) - len(self.deathNode) - 1 and self.alive:
+            print(str(self.myId) + " wait nbSynchronized : " + str(self.nbSynchronized) +  " Com.nbProcess : " + str(len(self.nodesId) - len(self.deathNode) - 1))
             sleep(2)
         self.nbSynchronized = 0
 
@@ -168,7 +175,7 @@ class Com():
         if self.myId != message.getSender():
             # self.incrClock(message.getEstampille())
             # print(str(self.myId) + " " + str(message))
-            Com.nbProcess -= 1
+            # Com.nbProcess -= 1
             self.deathNode.append(message.getSender())
 
     def sendDeathMessage(self):
@@ -199,6 +206,7 @@ class Com():
             Reception d'un message de broadcast synch
             @param sender: processus qui envoie le message
         """
+        sender = self.getIdFromName(sender)
         lastSynch = self.mailbox.getMsgFromSender(sender)
         if lastSynch.getSender() == sender:
             return lastSynch
@@ -210,20 +218,22 @@ class Com():
             @param message: message à envoyer
             @param sender: processus qui envoie le message
         """
+        sender = self.getIdFromName(sender)
         if self.myId == sender:
             self.incrClock()
             msg = BroadcastSynchMessage(message, self.clock, self.myId)
             PyBus.Instance().post(msg)
-            while self.nbBroadcastSync < Com.nbProcess - 1:
+            while self.nbBroadcastSync < len(self.nodesId) - len(self.deathNode) - 1 and self.alive:
                 sleep(2)
+                print(str(self.myId) + " wait nbBroadcastSync : " + str(self.nbBroadcastSync) +  " Com.nbProcess : " + str(len(self.nodesId) - len(self.deathNode)))
         else:
             lastSynch = self.mailbox.getMsgFromSender(sender)
-            while lastSynch == None:
+            while lastSynch == None and self.deathNode.count(sender) == 0:
                 sleep(2)
                 lastSynch = self.mailbox.getMsgFromSender(sender)
-            print(str(self.myId) + " " + str(lastSynch))
-            msg = AcknowledgeMessage("",self.clock, sender, lastSynch.getId())
-            PyBus.Instance().post(msg)
+            if lastSynch != None:
+                msg = AcknowledgeMessage("",self.clock, sender, lastSynch.getId())
+                PyBus.Instance().post(msg)
 
     @subscribe(threadMode = Mode.PARALLEL, onEvent=SendToSynchMessage)
     def onSendToSynch(self, message):
@@ -248,14 +258,16 @@ class Com():
             @param message: message à envoyer
             @param sender: processus qui envoie le message
         """
+        sender = self.getIdFromName(sender)
         lastSynch = self.mailbox.getMsgFromSender(sender)
         while lastSynch == None and self.deathNode.count(sender) == 0:
             sleep(2)
             lastSynch = self.mailbox.getMsgFromSender(sender)
             print("wait message : " + str(lastSynch))
         print(str(self.myId) + " " + str(lastSynch))
-        msg = AcknowledgeSendToMessage("",self.clock, sender, lastSynch.getId())
-        PyBus.Instance().post(msg)
+        if lastSynch != None:
+            msg = AcknowledgeSendToMessage("",self.clock, sender, lastSynch.getId())
+            PyBus.Instance().post(msg)
         return lastSynch
 
     def sendToSync(self, message, dest):
@@ -264,13 +276,42 @@ class Com():
             @param message: message à envoyer
             @param dest: destinataire du message
         """
+        dest = self.getIdFromName(dest)
         self.incrClock()
         msg = SendToSynchMessage(self.myId, dest, message, self.clock)
         PyBus.Instance().post(msg)
         while self.notAcknowledge and self.deathNode.count(dest) == 0:
             sleep(2)
-            print("wait ack")
+            print(str(self.myId) + " wait ack : " + str(self.deathNode))
         self.notAcknowledge = True
+
+    @subscribe(threadMode = Mode.PARALLEL, onEvent=ConnectionMessage)
+    def onConnect(self, message):
+        """
+            Reception d'un message de connection
+            @param message: message de connection
+        """
+        if not message.getId() in self.nodesId:
+            self.nodesId.append((message.getId(), message.getName()))
+        elif message.getId() == self.tmpId:
+            self.tmpId = randint(1, 1000)
+            conMsg = ConnectionMessage("connectionInit", self.clock, self.tmpId)
+            PyBus.Instance().post(conMsg)
+
+
+    def connect(self, name):
+        """
+            connect le com
+        """
+        self.tmpId = randint(1, 1000)
+        conMsg = ConnectionMessage("connectionInit", self.clock, self.tmpId, name)
+        PyBus.Instance().post(conMsg)
+        sleep(0.1)
+        self.nodesId.sort(key=lambda x: x[0])
+        self.myId = self.nodesId.index((self.tmpId, name))
+        for i in range(len(self.nodesId)):
+            self.nodesId[i] = (i, self.nodesId[i][1])
+        print("myId : " + str(self.myId) + " myName : " + str(name) + " nodesId : " + str(self.nodesId))
 
     def stop(self):
         """
@@ -280,9 +321,15 @@ class Com():
         self.sendDeathMessage()
         # self.join()
 
-    def getNbProcess(self):
-        return Com.nbProcess
-    
     def getMyId(self):
         return self.myId
+    
+    def getNbProcess(self):
+        return len(self.nodesId) - len(self.deathNode)
+    
+    def getIdFromName(self, name):
+        for i in range(len(self.nodesId)):
+            if self.nodesId[i][1] == name:
+                return self.nodesId[i][0]
+        return None
     
