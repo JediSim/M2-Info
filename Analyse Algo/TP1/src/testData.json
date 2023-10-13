@@ -1,0 +1,13 @@
+{
+  "executable": "python3 probleme3.py sommeMin",
+  "generator": "python3 genererPartie.py --tempFile",
+  "temp_file": "calculAux.tmp",
+  "valeurInitiale": 10,
+  "borneSup": 30,
+  "increment": "floor(3*x/2)+1",
+  "attenteMax": 25,
+  "logScale": false,
+  "courbesSup": ["log(x)", "x", "x*log(x)", "x**2", "2**x"],
+  "outputImageNamePrefix": "graph",
+  "outputImageSize": "1000,700"
+}
