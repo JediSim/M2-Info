@@ -1,9 +1,9 @@
 {
-  "executable": "python3 probleme3.py sommeMin",
+  "executable": "python3 probleme3.py sommeMinMemo",
   "generator": "python3 genererPartie.py --tempFile",
   "temp_file": "calculAux.tmp",
   "valeurInitiale": 10,
-  "borneSup": 30,
+  "borneSup": 10000,
   "increment": "floor(3*x/2)+1",
   "attenteMax": 25,
   "logScale": false,

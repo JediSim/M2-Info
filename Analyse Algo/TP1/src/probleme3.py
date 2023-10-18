@@ -17,19 +17,30 @@ import sys
 #   Fin pour
 #   retourne opt
 
-def sommeMin( t, i ):
-    return sommeMinRec(t,i)
-
-def sommeMinRec( tab, i ):
+def sommeMinRec( t, i ):
     if i == 0:
         return 0
     opt = float("inf")
-    for x in [ 1, 3, 5 ]:
+    for x in [ 1,3,5 ]:
         if x <= i:
-            tmp = tab[i] + sommeMinRec( tab, i-x )
+            tmp = t[i] + sommeMinRec( t, i-x )
             if tmp < opt:
                 opt = tmp
     return opt
+
+mem = {0: 0}
+def sommeMinMemo(t, n):
+    if n not in mem:
+        for i in range(1, n + 1):
+            opt = float('inf')
+            for x in [1, 3, 5]:
+                if x <= i:
+                    tmp = t[i] + sommeMinMemo(t, i-x)
+                    if tmp < opt:
+                        opt = tmp
+            mem[i] = opt
+    return mem[n]
+
 
 def usage( nom ):
     print("Usage : " + nom + " METHODE file")
@@ -47,9 +58,11 @@ if __name__ == '__main__':
 
     if sys.argv[1] == "sommeMin":
         print("sommeMin")
-        fct = sommeMin
+        fct = sommeMinRec
+    elif sys.argv[1] == "sommeMinMemo":
+        fct = sommeMinMemo
     elif sys.argv[1] == "sommeMin_muette":
-        fct = sommeMin
+        fct = sommeMinRec
         mute = 1
     else:
         print("Cette méthode n'existe pas.")
