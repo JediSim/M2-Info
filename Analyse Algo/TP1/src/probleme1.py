@@ -38,30 +38,14 @@ from math import sqrt
 #         Retourner fusionner(gaucheTrié, droitTrié)
 #     Fin Si
 
-def triFusion(l):
-    n = len(l)
-    if n <= 1:
+def fctNLogN(l):
+    if len(l) <= 1:
         return l
     else:
-        m = n // 2
-        gauche = l[0:m]
-        droit = l[m:n]
-        gaucheTrié = triFusion(gauche)
-        droitTrié = triFusion(droit)
-        return fusionner(gaucheTrié, droitTrié)
-
-def fusionner(gauche, droit):
-    res = []
-    while len(gauche) != 0 and len(droit) != 0:
-        if gauche[0] < droit[0]:
-            res.append(gauche[0])
-            gauche.pop(0)
-        else:
-            res.append(droit[0])
-            droit.pop(0)
-    res += gauche
-    res += droit
-    return res
+        pivot = l[0]
+        l1 = [x for x in l if x < pivot]
+        l2 = [x for x in l if x > pivot]
+        return fctNLogN(l1) + [pivot] + fctNLogN(l2)
 
 def triCube(l):
     n = len(l)
@@ -104,7 +88,7 @@ def fctAlgo( l ):
     # triInsertion(l) # graphique 2
     # triCube(l) # graphique 3
     # triExponentiel(l) # graphique 4
-    triFusion(l) # graphique 5
+    fctNLogN(l) # graphique 5
 
     return 42 # En vrai, votre fonction n'a même pas besoin de retourner quelque chose 
 

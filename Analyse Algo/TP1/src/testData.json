@@ -3,7 +3,7 @@
   "generator": "python3 genererPartie.py --tempFile",
   "temp_file": "calculAux.tmp",
   "valeurInitiale": 10,
-  "borneSup": 10000,
+  "borneSup": 100000,
   "increment": "floor(3*x/2)+1",
   "attenteMax": 25,
   "logScale": false,
