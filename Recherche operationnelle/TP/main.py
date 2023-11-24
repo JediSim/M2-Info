@@ -42,11 +42,25 @@ def graph_non_oriente():
 
     return graph
 
-graphOriente = graph_oriente()
-print(graphOriente)
+def graph_oriente_for_rank():
+    graph = Graph()
+    for i in range(1, 8):
+        sommet = Sommet(i)
+        graph.addSommet(sommet)
+    
+    graph.addArc(graph.getSommet(1), graph.getSommet(2))
+    graph.addArc(graph.getSommet(1), graph.getSommet(3))
+    graph.addArc(graph.getSommet(2), graph.getSommet(4))
+    graph.addArc(graph.getSommet(2), graph.getSommet(5))
+    graph.addArc(graph.getSommet(2), graph.getSommet(6))
+    graph.addArc(graph.getSommet(2), graph.getSommet(7))
+    graph.addArc(graph.getSommet(3), graph.getSommet(4))
+    graph.addArc(graph.getSommet(3), graph.getSommet(5))
+    graph.addArc(graph.getSommet(5), graph.getSommet(7))
+    graph.addArc(graph.getSommet(6), graph.getSommet(5))
 
-graphNonOriente = graph_non_oriente()
-print(graphNonOriente)
+    return graph
+
 
 matriceTestNonOriente = [
     [0, 1, 1, 0, 0, 0, 0],
@@ -67,24 +81,59 @@ matriceeTestOriente = [
     [0, 0, 0, 0, 0, 0, 0]
     ]
 
+print("===================graph oriente====================")
+
+# Construction du graphe orienté
+graphOriente = graph_oriente()
+print(graphOriente)
+
+# Calcul de la matrice d'adjacence
 graphOriente.calcMatriceAdjacence()
 matrice = graphOriente.getMatriceAdjacence()
 # print(matriceeTestOriente == matrice)
 print(matrice)
-degreEntrant = graphOriente.getDegreEntrant(graphOriente.getSommet(7))
-degreSortant = graphOriente.getDegreSortant(graphOriente.getSommet(7))
+
+# List noeuds a distance 2
 distance2 = graphOriente.getSommetDistanceN(2)
 print(distance2)
+
+# Distance min entre 2 noeuds
 distanceMin = graphOriente.getDistanceMin(graphOriente.getSommet(2), graphOriente.getSommet(6))
 print(f"distance min entre 2 et 6 : {distanceMin}")
 
+# Nombre de composantes connexes
+nbComposantesConnexes = graphOriente.getNbComposantesConnexes()
+print(f"nombre de composantes connexes : {nbComposantesConnexes}")
+
+
+
+print("===================graph non oriente====================")
+# Construction du graphe non orienté
+graphNonOriente = graph_non_oriente()
+print(graphNonOriente)
+
+# Calcul de la matrice d'adjacence
 graphNonOriente.calcMatriceAdjacence()
 matrice = graphNonOriente.getMatriceAdjacence()
 # print(matriceTestNonOriente == matrice)
 print(matrice)
-degreEntrant = graphNonOriente.getDegreEntrant(graphNonOriente.getSommet(5))
-degreSortant = graphNonOriente.getDegreSortant(graphNonOriente.getSommet(5))
+
+# List noeuds a distance 2
 distance2 = graphNonOriente.getSommetDistanceN(2)
 print(distance2)
+
+# Distance min entre 2 noeuds
 distanceMin = graphNonOriente.getDistanceMin(graphNonOriente.getSommet(2), graphNonOriente.getSommet(6))
 print(f"distance min entre 2 et 6 : {distanceMin}")
+
+# Nombre de composantes connexes
+nbComposantesConnexes = graphNonOriente.getNbComposantesConnexes()
+print(f"nombre de composantes connexes : {nbComposantesConnexes}") 
+
+print("===================graph oriente pour rank====================")
+
+graphRank = graph_oriente_for_rank()
+graphRank.calcMatriceAdjacence()
+
+rank = graphRank.rang()
+print(f"rank : {rank}")

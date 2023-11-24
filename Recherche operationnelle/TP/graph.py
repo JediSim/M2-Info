@@ -48,7 +48,7 @@ class Graph:
             self.calcMatriceAdjacence()
         matrice = self.matriceAdjacence
         for i in range(1, n):
-            matrice = np.dot(matrice, self.matriceAdjacence)
+            matrice = np.dot(matrice, matrice)
         res = []
         for i in range(0, len(matrice)):
             for j in range(0, len(matrice[i])):
@@ -62,11 +62,47 @@ class Graph:
         matrice = self.matriceAdjacence
         res = 1
         while matrice[sommet1.nom-1][sommet2.nom-1] == 0 or res > len(self.sommets):
-            matrice = np.dot(matrice, self.matriceAdjacence)
+            matrice = np.dot(matrice, matrice)
             res += 1
         if res > len(self.sommets):
             return -1
         return res
+    
+    def getNbComposantesConnexes(self):
+        if len(self.matriceAdjacence) == len(self.sommets):
+            self.calcMatriceAdjacence()
+        matrice = self.matriceAdjacence
+        matrice = matrice + np.identity(len(self.sommets))
+        matrice = (matrice > 0).astype(int)
+        for i in range(1, len(self.sommets)+1):
+            matrice = np.dot(matrice, matrice)
+            matrice = (matrice > 0).astype(int)
+        res = 1
+        for i in range(len(matrice)):
+            if matrice[i][res-1] == 0:
+                res += 1
+        return res
+        
+    def rang(self):
+        rangs = {}
+        for i in range(1,len(self.matriceAdjacence)+1):
+            if(self.getDegreEntrant(self.getSommet(i)) == 0):
+                rangs[i] = 0
+            else:
+                rangs[i] = None
+        for x in range(1,len(self.matriceAdjacence)+1):
+            for k in range(1,len(self.matriceAdjacence)+1):
+                if(rangs[k] == None):
+                    pred = np.argwhere(self.matriceAdjacence[:, k-1] > 0)
+                    tous_def = True
+                    predecesseur = pred.reshape(-1)
+                    for c in predecesseur:
+                        if(rangs[c+1] == None):
+                            tous_def = False
+                            break
+                    if(tous_def):
+                        rangs[k] = rangs[max(predecesseur+1)] + 1
+        return rangs
 
     def __str__(self):
         res = "Graph:\n"
