@@ -61,6 +61,26 @@ def graph_oriente_for_rank():
 
     return graph
 
+def graph_dijkstra():
+    graph = Graph()
+    for i in range(1, 8):
+        sommet = Sommet(i)
+        graph.addSommet(sommet)
+    
+    graph.addArc(graph.getSommet(1), graph.getSommet(2), 8)
+    graph.addArc(graph.getSommet(1), graph.getSommet(3), 2)
+    graph.addArc(graph.getSommet(2), graph.getSommet(7), 10)
+    graph.addArc(graph.getSommet(2), graph.getSommet(5), 3)
+    graph.addArc(graph.getSommet(3), graph.getSommet(4), 3)
+    graph.addArc(graph.getSommet(4), graph.getSommet(3), 4)
+    graph.addArc(graph.getSommet(4), graph.getSommet(2), 2)
+    graph.addArc(graph.getSommet(5), graph.getSommet(3), 5)
+    graph.addArc(graph.getSommet(5), graph.getSommet(6), 4)
+    graph.addArc(graph.getSommet(6), graph.getSommet(7), 2)
+    graph.addArc(graph.getSommet(6), graph.getSommet(5), 2)
+    graph.addArc(graph.getSommet(6), graph.getSommet(2), 5)
+
+    return graph
 
 matriceTestNonOriente = [
     [0, 1, 1, 0, 0, 0, 0],
@@ -137,3 +157,16 @@ graphRank.calcMatriceAdjacence()
 
 rank = graphRank.rang()
 print(f"rank : {rank}")
+
+print("===================graph oriente pour dijkstra====================")
+
+graphDijkstra = graph_dijkstra()
+graphDijkstra.calcMatriceAdjacence()
+graphDijkstra.calcMatricePoids()
+
+print(graphDijkstra.matricePoids)
+
+dijkstra = graphDijkstra.dijkstra(graphDijkstra.getSommet(1))
+path = graphDijkstra.dijkstra_path(graphDijkstra.getSommet(1), graphDijkstra.getSommet(7))
+print(dijkstra)
+print(path)

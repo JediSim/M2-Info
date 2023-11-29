@@ -17,11 +17,13 @@ def exo_1():
             if j % i == 0:
                 sommet1 = graph.getSommet(i)
                 sommet2 = graph.getSommet(j)
-                graph.addArc(sommet1, sommet2)
+                graph.addArc(sommet1, sommet2, i)
 
     # Print the graph
     print(graph)
-
+    graph.calcMatriceAdjacence()
+    graph.calcMatricePoids()
+    print(graph.matricePoids)
 
 def exo_2():
     # Define the initial state
@@ -106,5 +108,7 @@ def who_are_with_boat(state):
         if value == state['boat']:
             with_boat.append(key)
     return with_boat
+
+
 
 print(exo_1())

@@ -1,19 +1,21 @@
 import numpy as np
+import heapq
 
 class Graph:
     def __init__(self):
         self.sommets = []
         self.matriceAdjacence = []
+        self.matricePoids = []
 
     def addSommet(self, sommet):
         self.sommets.append(sommet)
 
-    def addArc(self, sommet1, sommet2):
-        sommet1.addVoisin(sommet2)
+    def addArc(self, sommet1, sommet2, poids=1):
+        sommet1.addVoisin(sommet2, poids)
 
-    def addArcDoubleSense(self, sommet1, sommet2):
-        self.addArc(sommet1, sommet2)
-        self.addArc(sommet2, sommet1)
+    def addArcDoubleSense(self, sommet1, sommet2, poids=1):
+        self.addArc(sommet1, sommet2, poids)
+        self.addArc(sommet2, sommet1, poids)
 
     def getSommet(self, nom):
         for sommet in self.sommets:
@@ -103,6 +105,56 @@ class Graph:
                     if(tous_def):
                         rangs[k] = rangs[max(predecesseur+1)] + 1
         return rangs
+    
+    def calcMatricePoids(self):
+        matrice = []
+        for i in range(0, len(self.matriceAdjacence)):
+            matrice.append([])
+            for j in range(0, len(self.matriceAdjacence[i])):
+                if self.matriceAdjacence[i][j] == 1:
+                    matrice[i].append(self.getSommet(i+1).poids[self.getSommet(j+1)])
+                else: 
+                    matrice[i].append(0)
+
+        self.matricePoids = np.array(matrice, dtype=np.float64)
+
+    def dijkstra(self, sommet_depart):
+        self.matricePoids[self.matricePoids == 0] = np.inf
+        d = self.matricePoids.copy()
+        # path = []
+        np.fill_diagonal(d, 0)
+
+        # Calcul la distance minimale entre le sommet de départ et tous les autres sommets
+        for k in range(0, len(self.matricePoids)):
+            for i in range(0, len(self.matricePoids)):
+                for j in range(0, len(self.matricePoids)):
+                    if d[i][j] > d[i][k] + d[k][j]:
+                        d[i][j] = d[i][k] + d[k][j]
+
+        return d[sommet_depart.nom-1]
+
+    def dijkstra_path(self, sommet_depart, sommet_arrivee):
+        self.matricePoids[self.matricePoids == 0] = np.inf
+        d = self.matricePoids.copy()
+        path = []
+        np.fill_diagonal(d, 0)
+
+        # Calcul la distance minimale entre le sommet de départ et tous les autres sommets
+        for k in range(0, len(self.matricePoids)):
+            for i in range(0, len(self.matricePoids)):
+                for j in range(0, len(self.matricePoids)):
+                    if d[i][j] > d[i][k] + d[k][j]:
+                        d[i][j] = d[i][k] + d[k][j]
+
+        # Calcul le chemin le plus court entre le sommet de départ et le sommet d'arrivée
+        path.append(sommet_arrivee)
+        while path[0] != sommet_depart:
+            for i in range(0, len(self.matricePoids)):
+                if d[sommet_depart.nom-1][path[0].nom-1] == d[sommet_depart.nom-1][i] + d[i][path[0].nom-1]:
+                    path.insert(0, self.getSommet(i+1))
+                    break
+
+        return d[sommet_depart.nom-1][sommet_arrivee.nom-1], path
 
     def __str__(self):
         res = "Graph:\n"
@@ -116,10 +168,12 @@ class Sommet:
     def __init__(self, nom):
         self.nom = nom
         self.voisin = []
+        self.poids = {}
 
-    def addVoisin(self, voisin):
+    def addVoisin(self, voisin, poids=1):
         if voisin not in self.voisin:
             self.voisin.append(voisin)
+            self.poids[voisin] = poids
 
     def __str__(self):
         return "Sommet: " + str(self.nom) + " Voisins: " + str(self.voisin)
