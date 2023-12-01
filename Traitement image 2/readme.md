@@ -1,125 +1,81 @@
-# Traitement d'image notes
+---
+title: You only look once Unified, real-time object detection
+---
+You only look once: Unified, real-time object detection
+===
 
-## The learning phase in machine learning
+[TOC]
 
-The learning phase typically involves the following steps:
+## Introduction
 
-1. Data Collection: The first step is to gather a dataset that contains examples of the problem you want the model to learn. This dataset should include input features (also known as independent variables) and corresponding target values (also known as dependent variables or labels).
+### Anciennes methodes
 
-2. Data Preprocessing: Before training the model, it's important to preprocess the data to ensure it is in a suitable format. This may involve tasks such as cleaning the data, handling missing values, scaling features, or encoding categorical variables.
+#### DPM (deformable parts models)
 
-3. Model Selection: Next, you need to choose an appropriate machine learning algorithm or model that is well-suited for your problem. There are various types of models, such as linear regression, decision trees, support vector machines, and neural networks, each with its own strengths and weaknesses.
+DPM est un classifier que l'on passe sur l'image comme un fenetre coulissante de manière à passer sur l'intégralité de l'image. Il utilise differents pipelines de manière concurente pour extraire les features, prédires les boxes, classifier.
 
-4. Training the Model: Once the model is selected, the learning phase involves feeding the training data into the model and adjusting its internal parameters to minimize the difference between the predicted outputs and the actual target values. This process is known as optimization or parameter estimation. The specific algorithm used for training depends on the chosen model.
+#### R-CNN
 
-5. Evaluation: After training the model, it is important to evaluate its performance on a separate validation or test dataset. This helps assess how well the model generalizes to unseen data and provides insights into its accuracy and reliability. Evaluation metrics such as accuracy, precision, recall, and F1 score are commonly used to measure the model's performance.
+R-CNN est un réseau par convolution. Le principe est de reperer des zones ou il y a potentiellement des objets. Ensuite on passe un classifier pour détecter le contenu de cette zone. Avec un traitement de pre-processing on défini les zones des objets dans l'image, on élimine les duplications de détection et on rescore les zones en fonction des autres objets dans l'image. Ce qui nous donne a la fin un réseau assez lent.
 
-6. Iteration and Improvement: Machine learning is an iterative process, and it often requires refining the model by adjusting hyperparameters, trying different algorithms, or collecting more data. This iterative process continues until the model achieves satisfactory performance on the validation or test dataset.
+### Et maintenant ? YOLO
 
-It's important to note that the learning phase in machine learning is computationally intensive and may require significant computational resources, especially for large datasets or complex models. Additionally, the quality and quantity of the training data play a crucial role in the model's ability to learn and generalize well.
+L'idée pour créer YOLO est de transformer la détection d'objet en un seul problème de regression, du pixel de l'image jusqu'à la détection des zones et la probabilité des class. Ce qui donne un réseau de convolution qui prédit les zones et les probabilitées des zones en même temps.
 
-Overall, the learning phase in machine learning involves training a model using a dataset, optimizing its parameters, evaluating its performance, and iteratively improving it to achieve better results.
+Yolo est donc particulièrement rapide puisqu'il n'y a que le réseau de convolution a traverser.
 
-## Data set for ML
+Contrairement aux deux autres techniques YOLO voit la totalité de l'image lors de son entrainement et de l'utilisation. Cela lui permet de prendre en compte le contexte de l'image pour faire ses prédictions.
 
-Tous les liens ne sont plus bon
-[Face and Object data set](https://datagen.tech/guides/image-datasets/image-datasets/#CAMO_Camouflaged_Object)
+## Comment ca marche ?
 
-## Milestone for DL
+Le réseau commence par découper l'image en $S \times S$ blocs. Si le centre d'un objet tombe dans un bloc, ce bloc est responsable de sa détection.
 
-1. Les débuts : Réseaux de neurones artificiels (ANN) et Perceptron (années 1950-1960)
-    - Les débuts de l'apprentissage automatique avec les réseaux de neurones artificiels.
-    - Le perceptron comme le premier modèle de réseau de neurones, mais limité aux problèmes linéaires.
+Chaque blocs prédisent $B$ bordures d'objet et leur score de confiance. Ce score montre a quel point le model est confiant sur sa bordure, c'est a dire que la bordure est bien placée et il y a bien un objet dedans. On l'écrit comme suis, $Pr(Object) ∗ IOU^{truth}_{pred}$. Si il n'y a pas d'objet dans la boxe le score doit être de zero, sinon on veut qu'il soit égual à l'intersection over union entre la zone prédite et le ground truth (la véritée de terrain).
 
-2. Années 1980-1990 : Déclin et renaissance avec les réseaux de neurones profonds
-    - Problèmes d'apprentissage profond (vanishing gradients) ont conduit à un déclin de l'intérêt.
-    - Redécouverte des réseaux de neurones profonds avec l'introduction d'algorithmes comme la rétropropagation (backpropagation).
+Chaque boxe contiennent 5 prédictions $x,y,w,h$ et la confiance. $(x,y)$ sont les coordonnées du centre de la boxe. $(w,h)$ sont la hauteur et la largeur de la boxe. La prediction de confiance represente l'$IOU$ entre la boxe et n'importe quelle boxe ground truth.
 
-3. 2006-2012 : Révolution avec les réseaux de neurones profonds
-    - Succès du modèle de Deep Belief Networks (DBN) et des architectures profondes.
-    - Utilisation de l'apprentissage non supervisé pour l'initialisation des réseaux de neurones profonds.
+Chaques blocs prédisent aussi $C$ probabilité conditionnel de class $Pr(Class_i|Object)$. Ces probabilités sont condtionnées par le fait qu'une boxe contienne un objet.
 
-4. 2012 : Émergence de la convolution avec AlexNet
-    - AlexNet, gagnant du concours ImageNet, a popularisé l'utilisation des convolutions pour le traitement des images.
-    - Utilisation intensive de GPU pour accélérer l'entraînement des modèles.
+Au moment de la phase test on multiplie les probabilités.
+$$
+Pr(Class_i|Object) ∗ Pr(Object) ∗ IOU^{truth}_{pred} = Pr(Class_i) ∗ IOU^{truth}_{pred}
+$$
 
-5. 2014-2015 : LSTMs et GRUs pour le traitement du langage naturel
-    - Long Short-Term Memory (LSTM) et Gated Recurrent Unit (GRU) pour traiter les séquences, notamment dans le domaine du langage naturel.
+![](https://codimd.math.cnrs.fr/uploads/upload_9904a2052acb1c74479b2b1ca4543b70.png)
 
-6. 2018-2019 : Transformer et l'attention
-    - Introduction de l'architecture Transformer, principalement utilisée pour les tâches de traitement du langage naturel.
-    - Mécanisme d'attention pour capturer les relations à longue distance (c'est pas pour les couples c'est capter l'info du début du texte qui impacte la fin).
+## Design du réseau
 
-7. 2020 et au-delà : AutoML, apprentissage fédéré, et modèles plus grands
-    - AutoML pour automatiser le processus de conception de modèles.
-    - L'apprentissage fédéré pour l'entraînement distribué sans centralisation des données.
-    - Modèles de plus en plus grands comme GPT-3 avec des centaines de milliards de paramètres.
+Ce model est implémenté comme un réseau de convolution. Les premiers layers de convolution permet d'extraire les features de l'image alors que les derniers, qui sont complètement connectés, prédises les probabilité et les coordonnées.
+Cette architecture est inspirée par le GoogLeNet model pour la classification d'image. Il y a 24 layers de convolution suivit par 2 layers complètements connecté. A la place du module d'inception utilisé par le GoogLeNet, YOLO utilise un layer de reduction $1 \times 1$ suivit par un layer convolutionnel $3 \times 3$.
+Une version rapide de YOLO à été entrainé pour repousser la limite de la détection rapide d'objet. Fast YOLO utilise le même type de réseau en reduisant le nombre de layer de convolution (9 à la place de 24).
 
-8. Défis et considérations éthiques
-    - Évolution de la recherche vers des modèles plus puissants soulève des questions éthiques concernant la confidentialité, la transparence, et la responsabilité.
+![](https://codimd.math.cnrs.fr/uploads/upload_777a88c33a9055ee4440dd02a8271f1a.png)
 
-## Milestones par categorie de problème
+## Entrainement
 
-1. Classification :
+L'entrainement commence par la partie des 20 premiers layers de convolution sur le dataset ImageNet. Cette première partie d'eentrainement a été arrétée quand le réseau a atteind un resultat de 88 % de reussite sur le set de validation ImageNet-2012.
+Le model est ensuite convertie pour faire de la détéction. Pour augmenter ls performances du réseau ils ajoutent 4 layers de convolution et 2 layers totalement connécté. Ils augmentent aussi la résolution de l'image d'entrée de $224 \times 224$ à $448 \times 448$ car détection demande une meilleur qualité.
+Ils utilisent la Somme des carrés des résidus pour calculer l'erreur car elle permet d'être facilement optimisée. Elle permet aussi de déscendre facilement le score de confiance à zéro dans les boxes qui ne contienent pas d'objet.
 
-    - **Débuts** : Utilisation de réseaux de neurones simples pour la classification binaire. Modèles comme le perceptron.
+## Comparaison et test
 
-    - **Évolution** : Émergence des réseaux de neurones profonds. Modèles tels que LeNet, AlexNet, VGG, et enfin, l'utilisation généralisée de CNN (Convolutional Neural Networks) pour la classification d'images.
+![](https://codimd.math.cnrs.fr/uploads/upload_8c25063deb35757e5cd1d2605aec177c.png)
 
-    - **Innovations récentes** : Architectures plus complexes comme ResNet, Inception, et EfficientNet. Utilisation de techniques d'augmentation de données, de normalisation de lot, et de techniques d'optimisation avancées.
+Il a été comparé avec d'autres réseau de neurones spécialisé dans la détection d'objet. Comme le montre ce petit tableau comparatif YOLO a reussi à rendre réellement possible la détection d'objet en temps réel.
 
-2. Détection d’objets :
+![](https://codimd.math.cnrs.fr/uploads/upload_4a1c47491e985c870111c29aa6b12fd6.png)
 
-    - **Débuts** : Utilisation d'approches basées sur des fenêtres glissantes. Limitations en termes de précision et de vitesse de traitement.
+La plus grosse source d'erreur de YOLO est la position des objets dans l'image. On peut observer que, par rapport a R-CNN, YOLO à moins de chance de confondre un objet avec le fond.
 
-    - **Évolution** : Apparition de Faster R-CNN, introduisant la région de proposition (Region Proposal Network). YOLO (You Only Look Once) qui effectue la détection d'objets en une seule passe. Evolution vers des versions plus rapides (YOLOv2, YOLOv3) et des modèles comme SSD (Single Shot Multibox Detector).
 
-    - **Innovations récentes** : YOLOv4 et YOLOv5 avec des améliorations de performances et une meilleure gestion des petits objets. Intégration de modèles de détection d'objets dans des applications en temps réel.
+## Résultats
 
-3. Super-résolution :
+![](https://codimd.math.cnrs.fr/uploads/upload_4d862bd9eb75533a86a59fc038a6d5b2.png)
 
-    - **Débuts** : Méthodes traditionnelles basées sur la récupération d'informations à partir de plusieurs images plus petites.
+YOLO a été testé sur des datasets d'oeuvre d'art, avec son annalise du contexte il est bien meilleur à détecter des objets dans des ouvres d'arts.
 
-    - **Évolution** : Introduction de CNN pour la super-résolution, notamment le modèle SRCNN (Super-Resolution Convolutional Neural Network).
+![](https://codimd.math.cnrs.fr/uploads/upload_d3b286f5366958500996e41f41a7585b.png)
 
-    - **Innovations récentes** : Modèles GAN (Generative Adversarial Networks) comme SRGAN, qui génèrent des images plus réalistes et détaillées. Réseaux résiduels pour une meilleure convergence.
+Il a été testé aussi sur des images de film et il présente des bons résultats même si ici il confont un homme et un avion.
 
-4. Colorisation :
-
-    - **Débuts** : Méthodes manuelles ou basées sur des règles pour attribuer des couleurs à des images en niveaux de gris.
-
-    - **Évolution** : Utilisation de CNN pour apprendre les correspondances de couleurs. Exemple : modèle de colorisation automatique de Zhang et al.
-
-    - **Innovations récentes** : Intégration de modèles GAN pour produire des colorisations plus naturelles et réalistes. Améliorations dans la gestion des contours et des détails.
-
-5. Transport de couleur :
-
-    - **Débuts** : Méthodes basées sur la correction de couleur globale.
-
-    - **Évolution** : Introduction de modèles d'apprentissage profond pour transférer des couleurs de manière plus fine et précise.
-
-    - **Innovations récentes** : Modèles qui tiennent compte du contexte de la scène pour des résultats plus cohérents.
-
-6. Flot optique :
-
-    - **Débuts** : Méthodes classiques basées sur la corrélation entre les images.
-
-    - **Évolution** : Introduction de modèles basés sur des réseaux de neurones, comme FlowNet, qui prédit directement le flot optique.
-
-    - **Innovations récentes** : Optimisations pour la vitesse et la précision. Utilisation de réseaux plus profonds et de mécanismes d'attention.
-
-7. Génération d’image à partir de texte :
-
-    - **Débuts** : Approches basées sur la correspondance mot à mot.
-
-    - **Évolution** : Utilisation de modèles GAN comme StackGAN et text-to-image synthesis basés sur des architectures Transformer.
-
-    - **Innovations récentes** : Modèles comme DALL-E, capables de générer des images variées et détaillées à partir de descriptions textuelles.
-
-8. Détection et suivi de visages / expressions :
-
-    - **Débuts** : Méthodes basées sur des caractéristiques faciales spécifiques, suivi de visages avec des modèles géométriques simples.
-
-    - **Évolution** : Introduction de modèles basés sur des caractéristiques apprises automatiquement, comme les CNN. Utilisation de réseaux pour la détection d'expressions faciales.
-
-    - **Innovations récentes** : Modèles end-to-end pour la détection et le suivi, intégration de modèles de vision par ordinateur avec des modèles d'apprentissage profond pour une meilleure précision. Utilisation de modèles spécifiques pour la reconnaissance des émotions.
+## Exemple de code
