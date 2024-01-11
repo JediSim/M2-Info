@@ -48,6 +48,10 @@ class Graph {
             destination: destination
         })
     }
+    // TODO export to file in rdf format
+    export(filename) {
+        
+    }
     toString() {
         let str = ""
         for(let node in this.nodes) {
