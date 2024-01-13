@@ -11,7 +11,7 @@ typedef unsigned char byte;         // facultatif
 char* alphabet;
 int lenAlphabet;
 int taille;
-int N;
+long N;
 
 //table infos
 int largeur = 0;
@@ -47,7 +47,7 @@ void AfficheConfig()
     printf("N = %d\n", N);
 }
 
-int calcule_N(int taille, char* alphabet)
+long calcule_N(int taille, char* alphabet)
 {
     return pow(lenAlphabet,taille);
 }
@@ -209,7 +209,6 @@ int recherche(int** table, int hauteur, int idx, int* a, int* b) {
             j = m - 1;
         }
     }
-    // printf("search done ko\n");
     return 0;
 }
 
@@ -258,15 +257,32 @@ int inverse(int** table, byte* h, byte* clair) {
     return 0;
 }
 
-float couverture()
+double couverture()
 {
-    float m = hauteur;
-    float v = 1.0;
+    double m = hauteur;
+    double v = 1.0;
     for (int i = 0; i < largeur; i++) {
         v = v * (1 - m / N);
-        m = (float)N * (1 - exp(-m / N));
+        m = (double)N * (1 - exp(-m / N));
     }
     return 100 * (1-v);
+}
+
+int recherche_exaustive(byte* h)
+{
+    for(int i = 0; i < N; i++)
+    {
+        char txt[taille+1];
+        txt[taille] = '\0';
+        i2c(i, txt);
+        byte empreinte[SHA_DIGEST_LENGTH] = {0};
+        hash_SHA1(txt, empreinte);
+        if(verif_hash(h, empreinte))
+        {
+            printf("found %s\n", txt);
+            return 1;
+        }
+    }
 }
 
 int main(int argc, char* argv[])
@@ -387,6 +403,7 @@ int main(int argc, char* argv[])
 
         byte* toCrackString = malloc(SHA_DIGEST_LENGTH * sizeof(byte));
         //get the hash from user input. The hash is the hexa representation of the hash
+        //COPILOTE FROM HERE
         char* hashString = argv[2];
         for(int i = 0; i < SHA_DIGEST_LENGTH; i++)
         {
@@ -396,6 +413,7 @@ int main(int argc, char* argv[])
             hex[2] = '\0';
             toCrackString[i] = (byte)strtol(hex, NULL, 16);
         }
+        //COPILOTE END HERE
         byte clair[taille+1];
         clair[taille] = '\0';
         if(inverse(table, toCrackString, clair)){
@@ -408,6 +426,21 @@ int main(int argc, char* argv[])
         hauteur = atoi(argv[3]);
         printf("couverture = %f\n", couverture());
         return 0;
+    }
+    else if(strcmp(argv[1],"--crack_exaustif")==0){
+        byte* toCrackString = malloc(SHA_DIGEST_LENGTH * sizeof(byte));
+        //COPILOTE FROM HERE
+        char* hashString = argv[2];
+        for(int i = 0; i < SHA_DIGEST_LENGTH; i++)
+        {
+            char hex[3];
+            hex[0] = hashString[i*2];
+            hex[1] = hashString[i*2+1];
+            hex[2] = '\0';
+            toCrackString[i] = (byte)strtol(hex, NULL, 16);
+        }
+        //COPILOTE END HERE
+        recherche_exaustive(toCrackString);
     }
     else {
         help();
