@@ -185,38 +185,44 @@ int** load_table(char* filepath)
 int recherche(int** table, int hauteur, int idx, int* a, int* b) {
     int i = 0;
     int j = hauteur - 1;
-    printf("search start %d \n",idx);
+    // printf("search start %d \n",idx);
     while (i <= j) {
         int m = (i + j) / 2;
         if (table[m][1] == idx) {
-            printf("if 1\n");
+            // printf("if 1\n");
             *a = m;
             *b = m;
             while (*a > 0 && table[*a - 1][1] == idx) {
                 (*a)--;
             }
-            printf("while 1 ok\n");
+            // printf("while 1 ok\n");
             while (*b < hauteur - 1 && table[*b + 1][1] == idx) {
                 (*b)++;
             }
-            printf("search done ok\n");
+            // printf("search done ok\n");
             return *b - *a + 1;
         } else if (table[m][1] < idx) {
-            printf("if 2\n");
+            // printf("if 2\n");
             i = m + 1;
         } else {
-            printf("if 3\n");
+            // printf("if 3\n");
             j = m - 1;
         }
     }
-    printf("search done ko\n");
+    // printf("search done ko\n");
     return 0;
 }
 
-int verif_hash(byte* h, byte* h2) {
-    for (int i = 0; i < SHA_DIGEST_LENGTH; i++) {
-        if (h[i] != h2[i]) {
-            printf("i= %dh[i] = %d h2[i] = %d\n",i, h[i], h2[i]);
+int verif_hash(byte* h, byte* empreinte) {
+    for (int i = 0; i < SHA_DIGEST_LENGTH; i=i+1) {
+        uint8_t a_h = h[i];
+        uint8_t b_h = h[i+1];
+        //first byte of empreinte[i]
+        int a_empreinte = empreinte[i];
+        //second byte of empreinte[i]
+        int b_empreinte = empreinte[i];
+        if(a_h != a_empreinte && b_h != b_empreinte)
+        {
             return 0;
         }
     }
@@ -228,34 +234,21 @@ int verifie_candidat(byte* h, int t, int idx, byte* clair) {
         idx = i2i(idx, i);
     }
     i2c(idx, clair);
-    printf("idx = %d clair = %s\n", idx,clair);
-    byte empreinte[SHA_DIGEST_LENGTH] = {0};
+    byte* empreinte = malloc(SHA_DIGEST_LENGTH * sizeof(char));
     hash_SHA1(clair, empreinte);
-    printf("empreinte =");
-    for (int i = 0; i < SHA_DIGEST_LENGTH; i++) {
-            printf("%02x", empreinte[i]);
-        }
-        printf("\n");
-    printf("verif %d\n",verif_hash(empreinte, h));
-    return verif_hash(empreinte, h);
+    return verif_hash(h, empreinte);
 }
 
 int inverse(int** table, byte* h, byte* clair) {
-    printf("let's crack it\n");
     for (int t = largeur - 1; t > 0; t--) {
         int idx = h2i(h, t);
-        // printf("idx = %d\n", idx);
         for (int i = t + 1; i < largeur; i++) {
             idx = i2i(idx, i);
         }
         int a, b;
-        // printf("before recherche\n");
         if (recherche(table, hauteur, idx, &a, &b) > 0) {
-            printf("found candidats between a %d and b %d\n",a,b);
             for (int i = a; i <= b; i++) {
-                printf("verif candidat i %d\n",i);
                 if (verifie_candidat(h, t, table[i][0], clair) == 1) {
-                    printf("found a candidate %s %s\n",h, clair);
                     return 1;
                 }
             }
@@ -275,7 +268,6 @@ float couverture()
     }
     return 100 * (1-v);
 }
-
 
 int main(int argc, char* argv[])
 {   
@@ -392,11 +384,21 @@ int main(int argc, char* argv[])
         {
             AfficheConfig();
         }
-        char* toCrack = argv[2];
-        printf("to crack = %s\n", toCrack);
+
+        byte* toCrackString = malloc(SHA_DIGEST_LENGTH * sizeof(byte));
+        //get the hash from user input. The hash is the hexa representation of the hash
+        char* hashString = argv[2];
+        for(int i = 0; i < SHA_DIGEST_LENGTH; i++)
+        {
+            char hex[3];
+            hex[0] = hashString[i*2];
+            hex[1] = hashString[i*2+1];
+            hex[2] = '\0';
+            toCrackString[i] = (byte)strtol(hex, NULL, 16);
+        }
         byte clair[taille+1];
         clair[taille] = '\0';
-        if(inverse(table, toCrack, clair)){
+        if(inverse(table, toCrackString, clair)){
             printf("clair = %s\n", clair);
         }
         return 0;
