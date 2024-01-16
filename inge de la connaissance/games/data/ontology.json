@@ -1,0 +1,112 @@
+
+{ "name": "Jeu vidéo", "subs": [
+	{ "name": "Social", "subs": [
+		{ "name": "Solo", "subs": [		] },
+		{ "name": "Multi", "subs": [
+			{ "name": "Réseau", "subs": [
+				{ "name": "Versus", "subs": [				] },
+				{ "name": "Coop", "subs": [				] },
+				{ "name": "MMO", "subs": [			] }			] },
+			{ "name": "Local", "subs": [
+				{ "name": "Split screen", "subs": [	] }	] }	] }	] },
+	{ "name": "Niveau/Accessibilité", "subs": [
+		{ "name": "Compétitif", "subs": [		] },
+		{ "name": "Casual", "subs": [		] },
+		{ "name": "Family Friendly", "subs": [	] }	] },
+	{ "name": "Méthode d'acquisition", "subs": [
+		{ "name": "Gratuit", "subs": [
+			{ "name": "Free to play", "subs": [		] }		] },
+		{ "name": "Payant", "subs": [
+			{ "name": "Licence", "subs": [			] },
+			{ "name": "Abonnement", "subs": [	] }	] }	] },
+	{ "name": "Transaction", "subs": [
+		{ "name": "Mode de payement", "subs": [
+			{ "name": "Micro transation", "subs": [			] },
+			{ "name": "Payement en ligne", "subs": [		] }		] },
+		{ "name": "Pourquoi", "subs": [
+			{ "name": "Contenu/Cosmétique", "subs": [
+				{ "name": "DLC", "subs": [			] }			] },
+			{ "name": "Expérience/Bonus/Items", "subs": [
+				{ "name": "Pay to win", "subs": [				] },
+				{ "name": "Pay to progress", "subs": [		] }		] }		] },
+		{ "name": "Acquisition", "subs": [
+			{ "name": "Direct", "subs": [			] },
+			{ "name": "Loot box", "subs": [			] },
+			{ "name": "Season pass", "subs": [	] }	] }	] },
+	{ "name": "Style graphique", "subs": [
+		{ "name": "Pixel/Pixel art", "subs": [		] },
+		{ "name": "Voxel/Bloc", "subs": [		] },
+		{ "name": "Minimaliste", "subs": [		] },
+		{ "name": "Low poly", "subs": [		] },
+		{ "name": "Manga/Cartoon", "subs": [		] },
+		{ "name": "Cell shading", "subs": [		] },
+		{ "name": "Réaliste", "subs": [	] }	] },
+	{ "name": "UI/Caméra/Dimensions", "subs": [
+		{ "name": "2D", "subs": [
+			{ "name": "Vue du dessus", "subs": [			] },
+			{ "name": "Vue de côté", "subs": [		] }		] },
+		{ "name": "3D", "subs": [
+			{ "name": "3D iso", "subs": [			] },
+			{ "name": "3D classique", "subs": [	] }	] }	] },
+	{ "name": "Gameplay", "subs": [
+		{ "name": "Shooter", "subs": [
+			{ "name": "FPV/FPS", "subs": [			] },
+			{ "name": "TPV/TPS", "subs": [		] }		] },
+		{ "name": "Plateforme", "subs": [		] },
+		{ "name": "Stratégie", "subs": [
+			{ "name": "RTS/Real Time Strategy", "subs": [
+				{ "name": "MobA", "subs": [			] }			] },
+			{ "name": "TBS/Turn Based Strategy", "subs": [		] }		] },
+		{ "name": "Course", "subs": [		] },
+		{ "name": "Hack and slash", "subs": [		] },
+		{ "name": "Dextérité", "subs": [
+			{ "name": "Rythme", "subs": [		] }		] },
+		{ "name": "Liberté", "subs": [
+			{ "name": "Open world", "subs": [			] },
+			{ "name": "Couloir", "subs": [		] }		] },
+		{ "name": "Synchronie", "subs": [
+			{ "name": "Tour par tour", "subs": [			] },
+			{ "name": "Temp réel", "subs": [	] }	] }	] },
+	{ "name": "Genre", "subs": [
+		{ "name": "Action", "subs": [		] },
+		{ "name": "Aventure", "subs": [		] },
+		{ "name": "Réflexion", "subs": [
+			{ "name": "Tactique/Stratégie", "subs": [			] },
+			{ "name": "Enigme/Puzzle/Casse tête", "subs": [		] }		] },
+		{ "name": "Simulation", "subs": [
+			{ "name": "Sport", "subs": [
+				{ "name": "Auto/Moto", "subs": [				] },
+				{ "name": "Foot", "subs": [			] }			] },
+			{ "name": "Métier", "subs": [
+				{ "name": "Agriculture", "subs": [				] },
+				{ "name": "Conduite", "subs": [		] }		] }		] },
+		{ "name": "RPG", "subs": [		] },
+		{ "name": "Survie", "subs": [		] },
+		{ "name": "Bac à sable", "subs": [		] },
+		{ "name": "Combat", "subs": [	] }	] },
+	{ "name": "Référence", "subs": [
+		{ "name": "Rogue like", "subs": [		] },
+		{ "name": "Soul's like", "subs": [		] },
+		{ "name": "Survivor Like", "subs": [		] },
+		{ "name": "Doom's like", "subs": [		] },
+		{ "name": "Metroid Vania", "subs": [	] }	] },
+	{ "name": "Thème", "subs": [
+		{ "name": "Guerre", "subs": [		] },
+		{ "name": "Horreur", "subs": [		] },
+		{ "name": "Nudité", "subs": [		] },
+		{ "name": "Zombie/Monstres", "subs": [		] },
+		{ "name": "Fantasy", "subs": [		] },
+		{ "name": "Futuriste", "subs": [		] },
+		{ "name": "Espace", "subs": [		] },
+		{ "name": "Satyre", "subs": [		] },
+		{ "name": "Romance", "subs": [		] },
+		{ "name": "Humour", "subs": [	] }	] },
+	{ "name": "Edition", "subs": [
+		{ "name": "Indie", "subs": [		] },
+		{ "name": "AAA", "subs": [	] }	] },
+	{ "name": "Plateforme", "subs": [
+		{ "name": "PC", "subs": [		] },
+		{ "name": "Console", "subs": [		] },
+		{ "name": "VR", "subs": [		] },
+		{ "name": "Mobile", "subs": [		] },
+		{ "name": "Navigateur", "subs": [		] }		] }		] }

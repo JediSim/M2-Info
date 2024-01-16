@@ -1,0 +1,111 @@
+Jeu vidéo|
+	Social|
+		Solo|Worms,Tetris,SC2,Starcraft,Portal,Mirror's edge,PoE,Tekken,Magikarp jump,CoD,Unturned,Minecraft,Dark Souls,Cyberpunk 2077,Control,Outer wilds,Pokemon,Skyrim,Rimworld,Islands of Insight,Horizon zero dawn,Lingo,Yakuza,chess.com,Limbo,Super Mario Bros,Crushcrush,Wii sport,Animal crossing,Antichamber,Monster hunter,No man sky,The Witcher,Super Hot,Superliminal,Gris,GTA,Far cry,Days gone,Final fantasy,Hitman,Total war,Osu
+		Multi|
+			Réseau|
+				Versus|Worm,SC2,Starcraft,Tekken,CoD,LoL,CS,Rocket League,Pokemon,chess.com,Wakfu,Dofus,chess.com,Wii sport,Total war,Osu
+				Coop|PoE,Unturned,Minecraft,Baldur's gate,Islands of Insight,Lingo,chess.com,It takes two,Super Mario Bros,Animal crossing,Monster hunter,No man sky,Total war
+				MMO|WoW,BDO,Islands of Insight
+			Local|Total war
+				Split screen|Tekken,CoD,Rocket League,Baldur's gate,It takes two,chess.com,Super Mario Bros,Wii sport,Animal crossing
+	Niveau/Accessibilité|
+		Compétitif|Tetris,SC2,Starcraft,Mirror's edge,Tekken,CoD,LoL,CS,Rocket League,BDO,Pokemon,chess.com,Wakfu,Dofus,chess.com,Hitman,Total war,Osu
+		Casual|Portal,Magikarp jump,Minecraft,Cyberpunk 2077,Outer wilds,Pokemon,Islands of Insight,Skyrim,Horizon zero dawn,Wakfu,Dofus,Yakuza,Lingo,chess.com,It takes two,Limbo,Super Mario Bros,Crushcrush,Wii sport,Animal crossing,Antichamber,No man sky,The Witcher,Super Hot,Superliminal,GTA,Far cry,Gris,Days gone,Final fantasy
+		Family Friendly|Worms,Tetris,Magikarp jump,Minecraft,Pokemon,Islands of Insight,It takes two,chess.com,Super Mario Bros,Wii sport,Animal crossing,Antichamber,No man sky,Superliminal
+	Méthode d'acquisition|
+		Gratuit|
+			Free to play|PoE,Magikarp jump,CoD,Unturned,LoL,CS,Rocket League,chess.com,Wakfu,Dofus,chess.com,Crushcrush,Osu
+		Payant|
+			Licence|Worms,Tetris,SC2,Starcraft,Portal,Mirror's edge,WoW,Tekken,CoD,Minecraft,Dark Souls,Cyberpunk 2077,Baldur's gate,Control,Outer wilds,BDO,Pokemon,Rimworld,Skyrim,Islands of Insight,Horizon zero dawn,Yakuza,Lingo,It takes two,Limbo,Super Mario Bros,Wii sport,Antichamber,Monster hunter,No man sky,The Witcher,Super Hot,Superliminal,GTA,Far cry,Gris,Days gone,Final fantasy,Hitman,Total war
+			Abonnement|WoW,Wakfu,Dofus,chess.com
+	Transaction|
+		Mode de payement|
+			Micro transation|PoE,Magikarp jump,CoD,Unturned,LoL,CS,Rocket League,BDO,Wakfu,Dofus,Crushcrush
+			Payement en ligne|Worms,Tetris,SC2,Starcraft,Mirror's edge,WoW,Tekken,CoD,Unturned,Minecraft,Cyberpunk 2077,Rocket League,Outer wilds,BDO,Skyrim,Wakfu,Dofus,chess.com,Limbo,Gris,Total war
+		Pourquoi|
+			Contenu/Cosmétique|LoL,CoD,CS,Cyberpunk 2077,BDO,Wakfu,Dofus,Crushcrush
+				DLC|CoD,Dark Souls,Cyberpunk 2077,BDO,Rimworld,Outer wilds,Skyrim,Horizon zero dawn,Animal crossing,Monster hunter,The Witcher,Final fantasy
+			Expérience/Bonus/Items|chess.com
+				Pay to win|CoD
+				Pay to progress|CoD,BDO,Crushcrush
+		Acquisition|
+			Direct|WoW,Minecraft,Dark Souls,Cyberpunk 2077,Baldur's gate,BDO,Outer wilds,Pokemon,Rimworld,Skyrim,Horizon zero dawn,Yakuza,It takes two,chess.com,Limbo,Super Mario Bros,Animal crossing,Monster hunter,No man sky,The Witcher,GTA,Far cry,Gris,Total war
+			Loot box|PoE,Unturned,LoL,CS,Wakfu,Dofus
+			Season pass|CoD,LoL,CS,Cyberpunk 2077,The Witcher
+	Style graphique|
+		Pixel/Pixel art|Tetris,Pokemon,chess.com,Osu
+		Voxel/Bloc|Worms,Unturned,Minecraft,Lingo,Antichamber
+		Minimaliste|Rimworld,Limbo,Gris
+		Low poly|Antichamber,Super Hot
+		Manga/Cartoon|WoW,Magikarp jump,LoL,Outer wilds,Islands of Insight,Wakfu,Dofus,Super Mario Bros,Wii sport,Animal crossing,Crushcrush,Monster hunter,Superliminal
+		Cell shading|SC2,Starcraft,It takes two
+		Réaliste|Portal,Mirror's edge,PoE,Tekken,CoD,Dark Souls,CS,Cyberpunk 2077,Baldur's gate,BDO,Control,Skyrim,Horizon zero dawn,No man sky,The Witcher,GTA,Far cry,Days gone,Final fantasy,Hitman,Total war
+	UI/Caméra/Dimensions|
+		2D|
+			Vue du dessus|Pokemon,Rimworld,Islands of Insight,Wakfu,Dofus,chess.com,Osu
+			Vue de côté|Worms,Tetris,Magikarp jump,Limbo,Super Mario Bros,Crushcrush,Gris
+		3D|
+			3D iso|SC2,Starcraft,PoE,Tekken,LoL,Baldur's gate,Animal crossing,Total war
+			3D classique|Portal,Mirror's edge,WoW,CoD,Unturned,Minecraft,Dark Souls,CS,Cyberpunk 2077,BDO,Control,Outer wilds,Islands of Insight,Skyrim,Horizon zero dawn,Yakuza,Lingo,It takes two,Wii sport,Antichamber,Monster hunter,No man sky,Super Hot,The Witcher,Superliminal,GTA,Far cry,Days gone,Final fantasy,Hitman
+	Gameplay|
+		Shooter|
+			FPV/FPS|Portal,Mirror's edge,CoD,Unturned,Minecraft,CS,Cyberpunk 2077,Outer wilds,Islands of Insight,Lingo,Wii sport,Antichamber,No man sky,Super Hot,Superliminal,GTA,Far cry,Hitman
+			TPV/TPS|Unturned,Minecraft,Dark Souls,BDO,Control,Islands of Insight,Horizon zero dawn,Yakuza,It takes two,Wii sport,Monster hunter,No man sky,The Witcher,GTA,Days gone,Final fantasy,Hitman
+		Plateforme|Worms,Islands of Insight,Lingo,Limbo,Super Mario Bros,Antichamber,Superliminal,Gris
+		Stratégie|Hitman
+			RTS/Real Time Strategy|SC2,Starcraft,Rimworld,Total war
+				MobA|LoL
+			TBS/Turn Based Strategy|Baldur's gate,Pokemon,Wakfu,Dofus,chess.com,Worms
+		Course|
+		Hack and slash|PoE,Super Hot
+		Dextérité|Tetris,Tekken,Islands of Insight,Super Hot
+			Rythme|Osu
+		Liberté|
+			Open world|Worms,WoW,Unturned,Cyberpunk 2077,BDO,Outer wilds,Islands of Insight,Skyrim,Horizon zero dawn,Lingo,Yakuza,Animal crossing,Monster hunter,No man sky,The Witcher,GTA,Far cry,Days gone,Final fantasy,Hitman
+			Couloir|Portal,Dark Souls,It takes two,Limbo,Antichamber,Superliminal,Gris,Final fantasy
+		Synchronie|
+			Tour par tour|Worms,Baldur's gate,Pokemon,Wakfu,Dofus,chess.com
+			Temp réel|SC2,Starcraft,Tekken,WoW,Unturned,Minecraft,LoL,CS,Rimworld,Islands of Insight,Lingo,It takes two,Limbo,Outer wilds,Wii sport,Monster hunter,Antichamber,No man sky,The Witcher,Super Hot,Superliminal,Days gone,Final fantasy,Hitman,Osu
+	Genre|
+		Action|Worms,Mirror's edge,PoE,Tekken,CoD,LoL,Dark Souls,CS,Cyberpunk 2077,Control,Skyrim,Horizon zero dawn,Yakuza,Monster hunter,No man sky,Super Hot,GTA,Far cry,Hitman,Osu
+		Aventure|Mirror's edge,WoW,Dark Souls,Cyberpunk 2077,Control,Outer wilds,Pokemon,Islands of Insight,Skyrim,Horizon zero dawn,Wakfu,Dofus,Lingo,It takes two,Limbo,Super Mario Bros,Animal crossing,Monster hunter,Antichamber,No man sky,The Witcher,Superliminal,GTA,Far cry
+		Réflexion|
+			Tactique/Stratégie|SC2,Starcraft,CS,Rimworld,chess.com,Wii sport
+			Enigme/Puzzle/Casse tête|Tetris,Portal,Outer wilds,Islands of Insight,Lingo,It takes two,chess.com,Limbo,Crushcrush,Antichamber,Superliminal
+		Simulation|Magikarp jump,Outer wilds,No man sky,Total war
+			Sport|Wii sport
+				Auto/Moto|
+				Foot|
+			Métier|
+				Agriculture|
+				Conduite|
+		RPG|PoE,Cyberpunk 2077,Baldur's gate,BDO,Islands of Insight,Skyrim,Horizon zero dawn,Wakfu,Dofus,Yakuza,Monster hunter,The Witcher,GTA,Far cry,Days gone,Final fantasy
+		Survie|Unturned,Minecraft,Animal crossing,No man sky
+		Bac à sable|Unturned,Minecraft,Rimworld,Skyrim,Yakuza,Animal crossing,No man sky
+		Combat|Worms,Tekken,Pokemon,Islands of Insight,Yakuza,chess.com,Super Hot,Hitman
+	Référence|
+		Rogue like|
+		Soul's like|Dark Souls
+		Survivor Like|
+		Doom's like|
+		Metroid Vania|
+	Thème|
+		Guerre|SC2,Starcraft,WoW,CoD,CS,chess.com,Hitman,Total war
+		Horreur|PoE,Dark Souls,Limbo
+		Nudité|Crushcrush
+		Zombie/Monstres|PoE,WoW,Unturned,Monster hunter,The Witcher,Days gone,Final fantasy
+		Fantasy|WoW,PoE,Minecraft,LoL,Dark Souls,Baldur's gate,BDO,Control,Pokemon,Rimworld,Skyrim,Islands of Insight,Wakfu,Dofus,It takes two,Super Mario Bros,Monster hunter,The Witcher,Days gone,Final fantasy
+		Futuriste|SC2,Starcraft,Portal,Mirror's edge,CoD,Cyberpunk 2077,Control,Antichamber,No man sky,Super Hot,Superliminal,Final fantasy
+		Espace|Outer wilds,No man sky
+		Satyre|Cyberpunk 2077,Baldur's gate,Yakuza,GTA,Far cry
+		Romance|Baldur's gate,Crushcrush,The Witcher
+		Humour|Worms,Portal,Magikarp jump,Yakuza,It takes two,Crushcrush,Superliminal
+	Edition|
+		Indie|Worms,Tetris,Unturned,Minecraft,LoL,Outer wilds,Rimworld,Islands of Insight,Wakfu,Dofus,Lingo,Limbo,chess.com,Crushcrush,Antichamber,Super Hot,Superliminal,Gris,Osu
+		AAA|SC2,Starcraft,Portal,Mirror's edge,WoW,PoE,Tekken,Magikarp jump,CoD,Dark Souls,CS,Cyberpunk 2077,BDO,Baldur's gate,Control,Pokemon,Skyrim,Horizon zero dawn,Yakuza,Super Mario Bros,Wii sport,Animal crossing,Monster hunter,The Witcher,No man sky,GTA,Far cry,Days gone,Final fantasy,Hitman,Total war
+	Plateforme|
+		PC|Worms,Tetris,SC2,Starcraft,Portal,Mirror's edge,WoW,PoE,Tekken,CoD,Unturned,Minecraft,LoL,Dark Souls,CS,Cyberpunk 2077,BDO,Baldur's gate,Control,Outer wilds,Rimworld,Skyrim,Islands of Insight,Horizon zero dawn,Wakfu,Dofus,Lingo,Yakuza,It takes two,Limbo,chess.com,Crushcrush,Antichamber,Monster hunter,The Witcher,Super Hot,No man sky,GTA,Far cry,Superliminal,Gris,Days gone,Final fantasy,Hitman,Total war,Osu
+		Console|Tetris,Mirror's edge,PoE,Tekken,CoD,Minecraft,Dark Souls,CS,Cyberpunk 2077,Baldur's gate,BDO,Control,Outer wilds,Pokemon,Skyrim,Horizon zero dawn,Yakuza,It takes two,chess.com,Super Mario Bros,Wii sport,Animal crossing,Crushcrush,Monster hunter,The Witcher,Super Hot,No man sky,GTA,Far cry,Superliminal,Gris,Days gone,Final fantasy,Hitman
+		VR|Minecraft,Super Hot,No man sky
+		Mobile|Tetris,Magikarp jump,CoD,Minecraft,LoL,Pokemon,Dofus,Limbo,chess.com,Gris,Osu
+		Navigateur|Tetris,Minecraft,chess.com,Crushcrush,Osu

@@ -1,0 +1,14 @@
+{
+  "name": "games",
+  "version": "1.0.0",
+  "description": "Semantic indexation",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "LD",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
