@@ -48,3 +48,6 @@ for(let element in data) {
 }
 
 console.log(store.toString())
+
+var req = "select distinct * where {?s rdfs:label ?label . } LIMIT 100"
+
